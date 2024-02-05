@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://bu123p6o0ahn4"]
+
+[ext_resource type="Script" path="res://world/wind/wind.gd" id="1_5snqg"]
+[ext_resource type="Texture2D" uid="uid://b38ahhaly8u47" path="res://world/wind/wind-particle.png" id="2_7lgn5"]
+[ext_resource type="AudioStream" uid="uid://dki26h2cxhfdj" path="res://world/wind/sfx_wind.ogg" id="3_dp7te"]
+
+[node name="Wind" type="Area2D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_5snqg")
+
+[node name="Area" type="CollisionShape2D" parent="."]
+
+[node name="Particles" type="CPUParticles2D" parent="."]
+modulate = Color(0.254902, 0.227451, 0.258824, 1)
+z_index = -1
+amount = 16
+lifetime = 1.125
+randomness = 1.0
+texture = ExtResource("2_7lgn5")
+emission_shape = 3
+emission_rect_extents = Vector2(1, 1)
+direction = Vector2(0, -1)
+spread = 0.0
+gravity = Vector2(0, -1)
+initial_velocity_min = 90.0
+initial_velocity_max = 100.0
+
+[node name="SFX" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_dp7te")
+volume_db = -10.0
+autoplay = true
+max_distance = 400.0
