@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://dainvxfj8xqf0"]
+
+[ext_resource type="Script" path="res://helpers/interactable.gd" id="1_ryo2h"]
+[ext_resource type="Shader" path="res://helpers/outline_shader.gdshader" id="1_suqp6"]
+[ext_resource type="Texture2D" uid="uid://cua5nihdv4pt2" path="res://world/flower.png" id="2_7la1k"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dennu"]
+radius = 16.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7rdb6"]
+shader = ExtResource("1_suqp6")
+shader_parameter/color = Color(0.964706, 0.776471, 0.658824, 1)
+shader_parameter/width = 0.0
+shader_parameter/pattern = 0
+shader_parameter/inside = false
+shader_parameter/add_margins = false
+shader_parameter/transparency_color = Color(0, 0, 0, 0)
+
+[node name="Interactable" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_ryo2h")
+
+[node name="Area" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_dennu")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_7rdb6")
+texture = ExtResource("2_7la1k")

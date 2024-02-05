@@ -19,3 +19,14 @@ func _on_body_entered(body: Node2D) -> void:
 	camera.limit_right = rect.end.x
 	camera.limit_top = rect.position.y
 	camera.limit_bottom = rect.end.y
+
+	var closest_checkpoint: Marker2D
+	var closest_distance: float = INF
+	for child in get_children():
+		if child is Marker2D:
+			var dist: float = child.global_position.distance_squared_to(body.global_position)
+			if dist < closest_distance:
+				closest_distance = dist
+				closest_checkpoint = child
+
+	Game.checkpoint = closest_checkpoint

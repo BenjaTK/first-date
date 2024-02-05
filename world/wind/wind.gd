@@ -1,13 +1,15 @@
 extends Area2D
 
 
+@export var direction: Vector2i = Vector2i.UP
+@export var push: float = 32.0
+@export var gravity_scale: float = -1.1
+@export var only_gliding: bool = true
+
 @onready var particles: CPUParticles2D = $Particles
 @onready var area: CollisionShape2D = $Area
 
 
-func _process(delta: float) -> void:
-	if not has_overlapping_bodies():
-		return
 
 
 func _ready() -> void:

@@ -24,6 +24,8 @@ var dir: int = 0
 var on_ground: bool = false
 var gravity_scale: float = 1.0
 var state_machine: StateMachine = StateMachine.new()
+var has_flower: bool = true
+var can_move: bool = true
 
 @onready var jump_velocity: float = ((2.0 * jump_height) / jump_time_to_peak) * -1.0
 @onready var jump_gravity: float = ((-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)) * -1.0
@@ -33,6 +35,7 @@ var state_machine: StateMachine = StateMachine.new()
 @onready var coyote_time: Timer = $CoyoteTime
 @onready var jump_buffer: Timer = $JumpBuffer
 @onready var sprite: Sprite2D = $Sprite
+@onready var flower: Sprite2D = $Sprite/Flower
 @onready var animator: AnimationPlayer = $Animator
 @onready var wind_detector: Area2D = $WindDetector
 
@@ -47,14 +50,23 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	flower.visible = has_flower
 	gravity_scale = 1.0
 	state_machine.update(delta)
+
+	if wind_detector.has_overlapping_areas():
+		var wind = wind_detector.get_overlapping_areas().front()
+		if is_instance_valid(wind) and not wind.only_gliding:
+			gravity_scale = wind.gravity_scale
+			if wind.direction != Vector2i.UP:
+				velocity += wind.direction * wind.push
+
 	dir = _get_dir()
 	if is_on_floor():
 		coyote_time.start()
 
 	if dir != 0:
-		sprite.flip_h = dir < 0
+		sprite.scale.x = -1 if dir < 0 else 1
 	on_ground = !coyote_time.is_stopped()
 
 	if not is_on_floor():
@@ -116,10 +128,15 @@ func _fall_state(delta: float) -> void:
 		if velocity.y < 0.0:
 			state_machine.set_state(_jump_state)
 
+
 func _glide_state(delta: float) -> void:
 	animator.play("glide")
 	if wind_detector.has_overlapping_areas():
-		gravity_scale = -1.1
+		var wind = wind_detector.get_overlapping_areas().front()
+		if is_instance_valid(wind) and wind.only_gliding:
+			gravity_scale = wind.gravity_scale
+			if wind.direction != Vector2i.UP:
+				velocity += wind.direction * wind.push
 
 	if is_on_floor():
 		state_machine.set_state(_idle_state)
@@ -142,6 +159,8 @@ func _get_gravity() -> float:
 
 
 func _get_dir() -> float:
+	if not can_move:
+		return 0
 	return Input.get_axis("move_left", "move_right")
 
 

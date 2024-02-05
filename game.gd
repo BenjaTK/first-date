@@ -1,6 +1,7 @@
 extends Node
 
 
+var checkpoint: Marker2D
 var camera: Camera2D : get = get_camera
 
 
