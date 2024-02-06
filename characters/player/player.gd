@@ -24,7 +24,7 @@ var dir: int = 0
 var on_ground: bool = false
 var gravity_scale: float = 1.0
 var state_machine: StateMachine = StateMachine.new()
-var has_flower: bool = true
+var has_flower: bool = false
 var can_move: bool = true
 
 @onready var jump_velocity: float = ((2.0 * jump_height) / jump_time_to_peak) * -1.0
@@ -38,6 +38,7 @@ var can_move: bool = true
 @onready var flower: Sprite2D = $Sprite/Flower
 @onready var animator: AnimationPlayer = $Animator
 @onready var wind_detector: Area2D = $WindDetector
+@onready var glide_sfx: AudioStreamPlayer = $GlideSFX
 
 
 func _ready() -> void:
@@ -60,6 +61,8 @@ func _physics_process(delta: float) -> void:
 			gravity_scale = wind.gravity_scale
 			if wind.direction != Vector2i.UP:
 				velocity += wind.direction * wind.push
+
+	glide_sfx.volume_db = lerp(glide_sfx.volume_db, -10.0 if state_machine.current_state == _glide_state else -50.0, 8.0 * delta)
 
 	dir = _get_dir()
 	if is_on_floor():
@@ -138,6 +141,7 @@ func _glide_state(delta: float) -> void:
 			if wind.direction != Vector2i.UP:
 				velocity += wind.direction * wind.push
 
+	print(velocity.y)
 	if is_on_floor():
 		state_machine.set_state(_idle_state)
 	else:
@@ -172,6 +176,7 @@ func _jump() -> void:
 	jump_buffer.stop()
 	coyote_time.stop()
 	velocity.y = jump_velocity
+	$JumpSFX.play()
 
 
 func is_gliding() -> bool:

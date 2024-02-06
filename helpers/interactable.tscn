@@ -7,7 +7,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_dennu"]
 radius = 16.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7rdb6"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xxwkf"]
 shader = ExtResource("1_suqp6")
 shader_parameter/color = Color(0.964706, 0.776471, 0.658824, 1)
 shader_parameter/width = 0.0
@@ -25,5 +25,5 @@ script = ExtResource("1_ryo2h")
 shape = SubResource("CircleShape2D_dennu")
 
 [node name="Sprite" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_7rdb6")
+material = SubResource("ShaderMaterial_xxwkf")
 texture = ExtResource("2_7la1k")

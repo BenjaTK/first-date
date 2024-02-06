@@ -1,8 +1,16 @@
-[gd_scene load_steps=13 format=3 uid="uid://bik6uuxmujoy"]
+[gd_scene load_steps=23 format=3 uid="uid://bik6uuxmujoy"]
 
 [ext_resource type="Script" path="res://characters/player/player.gd" id="1_xatgx"]
 [ext_resource type="Texture2D" uid="uid://clfndivhvnosp" path="res://characters/player/player.png" id="2_mk71b"]
 [ext_resource type="Texture2D" uid="uid://bwv1qirj44fy" path="res://characters/player/flower_held.png" id="3_cjocv"]
+[ext_resource type="AudioStream" uid="uid://duocaxfi2mdhs" path="res://characters/player/sfx/footstep grass 19.wav" id="5_tsade"]
+[ext_resource type="AudioStream" uid="uid://dbs120txnvnfc" path="res://characters/player/sfx/footstep grass and leaves 1.wav" id="5_wbfny"]
+[ext_resource type="AudioStream" uid="uid://bj81crojohigj" path="res://characters/player/sfx/footstep grass and leaves small 4.wav" id="7_2k3a0"]
+[ext_resource type="AudioStream" uid="uid://drun1pkmnpebb" path="res://characters/player/sfx/footstep grass and leaves small 2.wav" id="8_j0tkb"]
+[ext_resource type="AudioStream" uid="uid://dstdxr1yxoikt" path="res://characters/player/sfx/footstep grass light step 6.wav" id="8_pk11a"]
+[ext_resource type="AudioStream" uid="uid://cafcy6rwx7fv7" path="res://characters/player/sfx/sfx_glide.wav" id="9_mrnph"]
+[ext_resource type="AudioStream" uid="uid://c5rw4lq3ol1du" path="res://characters/player/sfx/sfx_jump-01.wav" id="10_6rgkr"]
+[ext_resource type="AudioStream" uid="uid://bis147tumoh56" path="res://characters/player/sfx/sfx_jump-02.wav" id="11_chxu5"]
 
 [sub_resource type="Animation" id="Animation_1xm2n"]
 length = 0.1
@@ -384,6 +392,23 @@ tracks/5/keys = {
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5]
 }
+tracks/6/type = "method"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("StepSFX")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [0.0],
+"method": &"play"
+}, {
+"args": [0.0],
+"method": &"play"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_4bu1g"]
 length = 0.001
@@ -417,6 +442,26 @@ height = 14.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_vha4n"]
 radius = 8.06226
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_2luaw"]
+streams_count = 5
+stream_0/stream = ExtResource("5_tsade")
+stream_0/weight = 0.1
+stream_1/stream = ExtResource("5_wbfny")
+stream_1/weight = 0.1
+stream_2/stream = ExtResource("8_j0tkb")
+stream_2/weight = 1.0
+stream_3/stream = ExtResource("7_2k3a0")
+stream_3/weight = 1.0
+stream_4/stream = ExtResource("8_pk11a")
+stream_4/weight = 0.1
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_p4vcd"]
+streams_count = 2
+stream_0/stream = ExtResource("10_6rgkr")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("11_chxu5")
+stream_1/weight = 1.0
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_xatgx")
@@ -424,14 +469,14 @@ speed = 80.0
 jump_height = 30.0
 jump_time_to_peak = 0.3
 jump_time_to_descent = 0.26
-glide_time_to_descent = 1.0
+glide_time_to_descent = 1.15
+glide_terminal_velocity = 64.0
 
 [node name="Sprite" type="Sprite2D" parent="."]
 texture_filter = 1
 texture = ExtResource("2_mk71b")
 hframes = 4
 vframes = 4
-frame = 6
 metadata/_aseprite_wizard_config_ = {
 "i_mode": -1,
 "keep_anim_length": false,
@@ -476,3 +521,19 @@ collision_mask = 4
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WindDetector"]
 position = Vector2(0, 10)
 shape = SubResource("CircleShape2D_vha4n")
+
+[node name="StepSFX" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_2luaw")
+max_polyphony = 2
+
+[node name="GlideSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_mrnph")
+volume_db = -50.0
+autoplay = true
+max_polyphony = 2
+
+[node name="JumpSFX" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_p4vcd")
+volume_db = -15.0
+autoplay = true
+max_polyphony = 2
